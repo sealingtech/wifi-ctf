@@ -13,7 +13,7 @@ Note: This project was used in a VM dedicated to the CTF and makes changes to ho
 This is a recon challenge consisting of just an open AP with some clients connected to it. The clients macs have been changed to mimic some mobile devices. The flag was the mac address of the Android device.
 
 ## AP-Bridged
-A WPA2 AP with a client connected. This AP is bridged to eth1, which was connected to an internal network with other non-wireless CTF challenge systems. This flag is the WPA2 PSK. Once the PSK was cracked, the players can connect to this AP and access the other systems.
+A WPA2 AP with a client connected. This AP is bridged to eth1, which was connected to an internal network with other non-wireless CTF challenge systems. This flag is the WPA2 PSK. Once the PSK was cracked, the players can connect to this AP and access the other systems. This configuration currently assumes that there's a DHCP server running on the bridged network to provide the IP address.
 
 ## AP-WPA3
 This is a WPA3 online bruteforce attack. No clients are connected. The wacker project from [Blunderbuss-WCTF](https://github.com/blunderbuss-wctf/wacker) was provided for the players to perform the bruteforce attack. The flag is the WPA3 passphrase.
@@ -109,6 +109,32 @@ Switch to 5GHz and scan for the remaining hidden network and it's client:
 airodump-ng --band a wlan0
 ```
 
+To verify that the bridge is working correctly, connect to AP-Bridged using wpa_supplicant
+
+Example config:
+```
+ctrl_interface=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+	ssid="AP-Bridged"
+	psk="thebridge"
+	key_mgmt=WPA-PSK
+	pairwise=CCMP TKIP
+	group=CCMP TKIP
+	proto=RSN
+}
+```
+```
+wpa_supplicant -c example.config -i wlan1
+```
+
+Once connected, request an IP address:
+```
+dhclient wlan1
+```
+
+The systems on this network should be reachable. You can test this with ping.
 
 
 # TODO
