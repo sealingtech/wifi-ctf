@@ -1,0 +1,12 @@
+[Unit]
+Description=Start all CTF components
+After=getty.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/home/ctfadmin/wifi-ctf/start.sh
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
