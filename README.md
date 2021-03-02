@@ -43,6 +43,7 @@ The following are the dependencies for the host system.
 ```
 sudo apt install docker.io
 sudo usermod -aG docker $USER
+sudo apt install net-tools
 sudo apt install hostapd
 sudo apt install bridge-utils
 sudo apt install dnsmasq
@@ -85,7 +86,33 @@ Enable the service:
 sudo systemctl enable start-ctf
 ```
 
+# Verify setup is working correctly
+Connect to the container via SSH (if you changed the port in start.sh make sure you use that here):
+```
+ssh root@<ipaddress>
+```
+Default password is ctf1234
+
+Put one of the wireless interfaces into monitor mode:
+```
+iwconfig wlan0 mode monitor
+```
+
+Scan for the APs and clients:
+```
+airodump-ng wlan0
+```
+You should see 3 APs here - AP-Guest, AP-Bridged, and AP-WPA3. It may take some time, but you should also see 6 clients associated with the Guest network, and 1 client for the AP-Bridged network.
+
+Switch to 5GHz and scan for the remaining hidden network and it's client:
+```
+airodump-ng --band a wlan0
+```
+
+
+
 # TODO
 - Make it easier to add/remove challenges
 - Generation scripts for challenge types
 - PSK randomization on boot
+- Logging
